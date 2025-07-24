@@ -2,7 +2,7 @@ export default [
   {
     author: 'Chinua Achebe',
     country: 'Nigeria',
-    imageLink: 'images/things-fall-apart.jpg',
+    imageLink: 'https://covers.openlibrary.org/b/olid/OL1089342M-L.jpg',
     language: 'English',
     link: 'https://en.wikipedia.org/wiki/Things_Fall_Apart\n',
     pages: 209,
@@ -13,7 +13,7 @@ export default [
   {
     author: 'Hans Christian Andersen',
     country: 'Denmark',
-    imageLink: 'images/fairy-tales.jpg',
+    imageLink: 'https://covers.openlibrary.org/b/olid/OL1089342M-L.jpg',
     language: 'Danish',
     link: 'https://en.wikipedia.org/wiki/Fairy_Tales_Told_for_Children._First_Collection.\n',
     pages: 784,
@@ -24,7 +24,7 @@ export default [
   {
     author: 'Dante Alighieri',
     country: 'Italy',
-    imageLink: 'images/the-divine-comedy.jpg',
+    imageLink: 'https://covers.openlibrary.org/b/olid/OL27967222M-L.jpg',
     language: 'Italian',
     link: 'https://en.wikipedia.org/wiki/Divine_Comedy\n',
     pages: 928,

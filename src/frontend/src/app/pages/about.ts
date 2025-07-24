@@ -4,7 +4,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   selector: 'app-about',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [],
-  template: ` <p>About Page Here</p> `,
+  template: ` <p>About</p> `,
   styles: ``,
 })
 export class About {}
