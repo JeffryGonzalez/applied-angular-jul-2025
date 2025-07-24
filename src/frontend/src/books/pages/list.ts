@@ -1,6 +1,17 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { BooksStore } from '../services/books-store';
 
+/*
+Requirements for Sprint 3
+- sort by title (default)
+- sort by author
+- sort by year
+
+- "prefs" page to configure what to sort by
+- persist prefs to local storage
+
+*/
+
 @Component({
   selector: 'app-book-list',
   changeDetection: ChangeDetectionStrategy.OnPush,

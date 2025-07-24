@@ -1,14 +1,6 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { BooksStore } from '../services/books-store';
 
-/*
-Requirements for Sprint 2
-- The total number of books.
-- The earliest year a book was published from our list.
-- The most recent year a book was published from our list.
-- The average number of pages of the books.
-*/
-
 @Component({
   selector: 'app-book-stats',
   changeDetection: ChangeDetectionStrategy.OnPush,
