@@ -3,6 +3,7 @@ export type BookApiItem = {
   author: string;
   country: string;
   imageLink: string;
+  link: string;
   title: string;
   pages: number;
   year: number;
