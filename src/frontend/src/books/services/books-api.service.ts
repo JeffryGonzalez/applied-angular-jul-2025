@@ -2,13 +2,18 @@ import { HttpClient } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Books } from '../books';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { BookApiItem } from '../types';
 
 export class BooksApiService {
   #baseUrl = '/api/books';
   #http = inject(HttpClient);
 
   getBooksAsSignal() {
-    return toSignal(this.#http.get<Books>(this.#baseUrl));
+    return toSignal(this.#http.get(this.#baseUrl));
+  }
+
+  getBooks() {
+    return this.#http.get<BookApiItem[]>(this.#baseUrl);
   }
 }
 
