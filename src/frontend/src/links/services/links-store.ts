@@ -130,10 +130,10 @@ export const LinksStore = signalStore(
     onInit(store) {
       store._load({ isBackgroundFetch: false });
       console.log('The Links Store Is Created!');
-      // This is better than what I had with the setInterval - the takeUntilDestroyed will clean this up for us.
-      interval(5000)
-        .pipe(takeUntilDestroyed())
-        .subscribe(() => store._load({ isBackgroundFetch: true }));
+      //   // This is better than what I had with the setInterval - the takeUntilDestroyed will clean this up for us.
+      //   interval(5000)
+      //     .pipe(takeUntilDestroyed())
+      //     .subscribe(() => store._load({ isBackgroundFetch: true }));
     },
     onDestroy() {
       console.log('The Links Store is DESTROYED');
