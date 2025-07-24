@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { Books } from '../books';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { BookApiItem } from '../types';
 

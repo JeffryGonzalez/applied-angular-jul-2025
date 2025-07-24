@@ -4,7 +4,7 @@ import { inject } from '@angular/core';
 import { BooksApiService } from './books-api.service';
 import { setEntities, withEntities } from '@ngrx/signals/entities';
 import { BookApiItem } from '../types';
-import { exhaustAll, exhaustMap, pipe, tap } from 'rxjs';
+import { exhaustMap, pipe, tap } from 'rxjs';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 
 export const BooksStore = signalStore(
