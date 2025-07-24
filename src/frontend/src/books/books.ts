@@ -43,6 +43,46 @@ import { BookApiItem } from './types';
             }
           </ul>
         </details>
+        <details class="dropdown">
+          <summary class="btn m-1">Titles</summary>
+          <ul
+            class="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+          >
+            @for (title of titles(); track title) {
+              @if (title === filterTitle() || !filterTitle()) {
+                <li>
+                  <input
+                    (click)="filterTitle.set(title)"
+                    class="btn"
+                    type="radio"
+                    name="filter"
+                    [attr.aria-label]="title"
+                  />
+                </li>
+              }
+            }
+          </ul>
+        </details>
+        <details class="dropdown">
+          <summary class="btn m-1">Years</summary>
+          <ul
+            class="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+          >
+            @for (year of years(); track year) {
+              @if (year === filterYear() || !filterYear()) {
+                <li>
+                  <input
+                    (click)="filterYear.set(year)"
+                    class="btn"
+                    type="radio"
+                    name="filter"
+                    [attr.aria-label]="year"
+                  />
+                </li>
+              }
+            }
+          </ul>
+        </details>
       </form>
     }
     @if (booksResource.hasValue()) {
@@ -95,8 +135,8 @@ import { BookApiItem } from './types';
 })
 export class Books {
   filterAuthor = signal<string | null>(null);
-  // filterTitle = signal<string | null>(null);
-  // filterYear = signal<string | null>(null);
+  filterTitle = signal<string | null>(null);
+  filterYear = signal<number | null>(null);
 
   booksResource = resource<BookApiItem[], unknown>({
     loader: () => fetch('/api/books').then((r) => r.json()),
@@ -112,23 +152,25 @@ export class Books {
 
   setFiltersNull() {
     this.filterAuthor.set(null);
+    this.filterTitle.set(null);
+    this.filterYear.set(null);
   }
 
-  // filteredBooksByTitle = computed(() => {
-  //   const title = this.filterTitle();
-  //   if (title === null) return this.booksResource.value();
-  //   return (this.booksResource.value() || []).filter((book) =>
-  //     book.title.includes(title),
-  //   );
-  // });
+  filteredBooksByTitle = computed(() => {
+    const title = this.filterTitle();
+    if (title === null) return this.booksResource.value();
+    return (this.booksResource.value() || []).filter((book) =>
+      book.title.includes(title),
+    );
+  });
 
-  // filteredBooksByYear = computed(() => {
-  //   const year = this.filterYear();
-  //   if (year === null) return this.booksResource.value();
-  //   return (this.booksResource.value() || []).filter((book) =>
-  //     book.year.includes(year),
-  //   );
-  // });
+  filteredBooksByYear = computed(() => {
+    const year = this.filterYear();
+    if (year === null) return this.booksResource.value();
+    return (this.booksResource.value() || []).filter(
+      (book) => book.year === year,
+    );
+  });
 
   authors = computed(() => {
     const books = this.booksResource.value() || [];
@@ -137,17 +179,17 @@ export class Books {
     return Array.from(allAuthors);
   });
 
-  // titles = computed(() => {
-  //   const books = this.booksResource.value() || [];
-  //   const allTitles = new Set<string>();
-  //   books.forEach((books) => allTitles.add(books.title));
-  //   return Array.from(allTitles);
-  // });
+  titles = computed(() => {
+    const books = this.booksResource.value() || [];
+    const allTitles = new Set<string>();
+    books.forEach((books) => allTitles.add(books.title));
+    return Array.from(allTitles);
+  });
 
-  // years = computed(() => {
-  //   const books = this.booksResource.value() || [];
-  //   const allYears = new Set<number>();
-  //   books.forEach((books) => allYears.add(books.year));
-  //   return Array.from(allYears);
-  // });
+  years = computed(() => {
+    const books = this.booksResource.value() || [];
+    const allYears = new Set<number>();
+    books.forEach((books) => allYears.add(books.year));
+    return Array.from(allYears);
+  });
 }
