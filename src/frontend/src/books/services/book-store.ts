@@ -1,6 +1,12 @@
-import { patchState, signalStore, withHooks, withMethods } from '@ngrx/signals';
+import {
+  patchState,
+  signalStore,
+  withComputed,
+  withHooks,
+  withMethods,
+} from '@ngrx/signals';
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
-import { inject } from '@angular/core';
+import { computed, inject } from '@angular/core';
 import { BooksApiService } from './books-api.service';
 import { setEntities, withEntities } from '@ngrx/signals/entities';
 import { BookApiItem } from '../types';
@@ -29,7 +35,22 @@ export const BooksStore = signalStore(
     };
   }),
 
-  //add computed stuff here,
+  withComputed((store) => {
+    return {
+      averagePageLength: computed(() => {
+        const books = store.entities();
+        const averagePages = books.reduce((acc, book, index, array) => {
+          acc += book.pages;
+          if (index === array.length - 1) {
+            return acc / array.length;
+          }
+          return acc;
+        }, 0);
+
+        return averagePages;
+      }),
+    };
+  }),
   withHooks({
     onInit(store) {
       console.log('loading books');
