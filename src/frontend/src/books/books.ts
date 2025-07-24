@@ -1,16 +1,28 @@
-import { JsonPipe } from '@angular/common';
-import { Component, ChangeDetectionStrategy, resource } from '@angular/core';
-import { BookApiItem } from './types';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  resource,
+  inject,
+} from '@angular/core';
+import { BooksStore } from './services/books-store';
+import { BooksTableComponent } from './components/books-table';
 
 @Component({
   selector: 'app-books',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [JsonPipe],
-  template: ` <pre>{{ booksResource.value() | json }}</pre> `,
+  imports: [BooksTableComponent],
+  template: `
+    <div>
+      <p>The Number of books are: {{ store.entities().length }}</p>
+      <p>You are Ordering by: {{ store.sortedBy() }}</p>
+    </div>
+    <app-books-table />
+  `,
   styles: ``,
 })
 export class Books {
-  booksResource = resource<BookApiItem[], unknown>({
-    loader: () => fetch('/api/books').then((r) => r.json()),
-  });
+  store = inject(BooksStore);
+  // booksResource = resource<BookApiItem[], unknown>({
+  //   loader: () => fetch('/api/books').then((r) => r.json()),
+  // });
 }
