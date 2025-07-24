@@ -62,17 +62,16 @@ export const BooksStore = signalStore(
           case 'title':
             return books.sort((a, b) => a.title.localeCompare(b.title));
           case 'pages':
-            return books.sort((a, b) =>
-              a.pages.toString().localeCompare(b.pages.toString()),
-            );
+            return books.sort((a, b) => a.pages - b.pages);
           case 'year':
-            return books.sort((a, b) =>
-              a.toString().localeCompare(b.year.toString()),
-            );
+            return books.sort((a, b) => a.year - b.year);
           case 'language':
             return books.sort((a, b) => a.language.localeCompare(b.language));
           default:
-            return books.sort((a, b) => a.id.localeCompare(b.id));
+            return books.sort(
+              (a, b) =>
+                (a.id as unknown as number) - (b.id as unknown as number),
+            );
         }
       }),
     };
