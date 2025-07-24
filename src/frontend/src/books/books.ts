@@ -1,10 +1,9 @@
-import { JsonPipe } from '@angular/common';
 import {
-  Component,
   ChangeDetectionStrategy,
+  Component,
+  computed,
   resource,
   signal,
-  computed,
 } from '@angular/core';
 import { BookApiItem } from './types';
 
@@ -106,30 +105,6 @@ import { BookApiItem } from './types';
         }
       </ul>
     }
-    <!-- @for (book of filteredBooksByAuthor(); track book.id) {
-            <li class="list-row mb-2">
-              <div>
-                <p class="text-md font-bold">{{ book.title }}</p>
-                <a class="link" [href]="book.link" target="_blank">{{
-                  book.link
-                }}</a>
-              </div> -->
-    <!-- <div></div> -->
-    <!-- <div>
-                @for (tag of link.tags; track tag) {
-                  <button
-                    (click)="filterTag.set(tag)"
-                    class="badge badge-primary mr-2"
-                  >
-                    {{ tag }}
-                  </button>
-                }
-              </div> -->
-    <!-- </li>
-          } @empty {
-            <p>Sorry, no links! Maybe add some?</p>
-          }
-        </ul> -->
   `,
   styles: ``,
 })
