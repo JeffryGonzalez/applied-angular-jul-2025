@@ -1,16 +1,18 @@
-import { JsonPipe } from '@angular/common';
-import { Component, ChangeDetectionStrategy, resource } from '@angular/core';
-import { BookApiItem } from './types';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { RouterLink, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-books',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [JsonPipe],
-  template: ` <pre>{{ booksResource.value() | json }}</pre> `,
+  imports: [RouterOutlet, RouterLink],
+  template: `
+    <div class="flex flex-row gap-4">
+      <a routerLink="ui" class="link">UI</a>
+      <a routerLink="stats" class="link">Stats</a>
+      <a routerLink="prefs" class="link">Prefs</a>
+    </div>
+    <router-outlet />
+  `,
   styles: ``,
 })
-export class Books {
-  booksResource = resource<BookApiItem[], unknown>({
-    loader: () => fetch('/api/books').then((r) => r.json()),
-  });
-}
+export class Books {}
