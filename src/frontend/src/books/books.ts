@@ -15,27 +15,36 @@ import { BookApiItem } from './types';
   template: `
     @if (booksResource.isLoading()) {
       <div class="loading-ball loading"></div>
-    }
-    <!-- } @else {
+    } @else {
       <form class="filter">
         <input
-          (click)="filterAuthor.set(null)"
+          (click)="setFiltersNull()"
           class="btn btn-square"
           type="reset"
           value="×"
         />
-        @for (author of authors(); track author) {
-          @if (author === filterTag() || !filterTag()) {
-            <input
-              (click)="filterTag.set(tag)"
-              class="btn"
-              type="radio"
-              name="filter"
-              [attr.aria-label]="tag"
-            />
-          }
-        }
-      </form> -->
+        <details class="dropdown">
+          <summary class="btn m-1">Authors</summary>
+          <ul
+            class="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+          >
+            @for (author of authors(); track author) {
+              @if (author === filterAuthor() || !filterAuthor()) {
+                <li>
+                  <input
+                    (click)="filterAuthor.set(author)"
+                    class="btn"
+                    type="radio"
+                    name="filter"
+                    [attr.aria-label]="author"
+                  />
+                </li>
+              }
+            }
+          </ul>
+        </details>
+      </form>
+    }
     @if (booksResource.hasValue()) {
       <ul class="list rounded-box bg-base-300">
         @for (book of booksResource.value(); track book.id) {
@@ -53,7 +62,7 @@ import { BookApiItem } from './types';
             </div>
           </li>
         } @empty {
-          <p>Sorry, no links! Maybe add some?</p>
+          <p>Sorry, no Books! Maybe add some?</p>
         }
       </ul>
     }
@@ -100,6 +109,10 @@ export class Books {
       book.author.includes(author),
     );
   });
+
+  setFiltersNull() {
+    this.filterAuthor.set(null);
+  }
 
   // filteredBooksByTitle = computed(() => {
   //   const title = this.filterTitle();
