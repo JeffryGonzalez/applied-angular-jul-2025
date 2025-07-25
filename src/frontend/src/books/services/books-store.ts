@@ -6,57 +6,67 @@ import {
   withComputed,
   withHooks,
   withMethods,
+  withState,
 } from '@ngrx/signals';
-import { setEntities, withEntities } from '@ngrx/signals/entities';
-import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { exhaustMap, pipe, tap } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { BookApiItem } from '../types';
 
+export type BooksState = {
+  books: BookApiItem[];
+  isLoading: boolean;
+};
+
+const initialState: BooksState = {
+  books: [],
+  isLoading: false,
+};
+
 export const BooksStore = signalStore(
-  withEntities<BookApiItem>(),
-  withMethods((state) => {
+  withState(() => initialState),
+  withMethods((store) => {
     const http = inject(HttpClient);
+
     return {
-      _load: rxMethod(
-        pipe(
-          exhaustMap(() =>
-            http
-              .get<BookApiItem[]>('/api/books')
-              .pipe(tap((r) => patchState(state, setEntities(r)))),
-          ),
-        ),
-      ),
+      async _loadBooks(): Promise<void> {
+        patchState(store, { isLoading: true });
+
+        const books = await firstValueFrom(
+          http.get<BookApiItem[]>('/api/books'),
+        );
+
+        patchState(store, { books, isLoading: false });
+      },
     };
   }),
   withComputed((store) => {
     return {
-      bookCount: computed(() => store.entities().length),
+      bookCount: computed(() => store.books().length),
       earliestYear: computed(() => {
         return store
-          .entities()
+          .books()
           .map((b) => b.year)
           .sort()[0];
       }),
       mostRecentYear: computed(() => {
         const sortedByYear = store
-          .entities()
+          .books()
           .map((b) => b.year)
           .sort();
         return sortedByYear[sortedByYear.length - 1];
       }),
       averageNumberPages: computed(() => {
         const totalPages = store
-          .entities()
+          .books()
           .reduce((prev, curr) => (prev += curr.pages), 0);
         return totalPages > 0
-          ? Math.round(totalPages / store.entities().length)
+          ? Math.round(totalPages / store.books().length)
           : null;
       }),
     };
   }),
   withHooks({
     onInit(store) {
-      store._load({}); // what is the deal w/ having to pass something in here
+      store._loadBooks();
     },
   }),
 );

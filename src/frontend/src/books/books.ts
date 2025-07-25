@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FeatureNav, FeatureNavLink } from '../shared/components/feature-nav';
 import { BooksStore } from './services/books-store';
 
@@ -8,7 +8,7 @@ import { BooksStore } from './services/books-store';
   imports: [FeatureNav],
   providers: [BooksStore],
   template: `
-    <app-feature-nav [links]="bookLinks" sectionName="Links">
+    <app-feature-nav [links]="bookLinks" sectionName="Books">
       <!-- @if (isLoggedIn() === false) {
         <p>You must be logged in to see the preferences link or add links</p>
       } -->
@@ -18,7 +18,7 @@ import { BooksStore } from './services/books-store';
 })
 export class Books {
   bookLinks: FeatureNavLink[] = [
-    { href: ['/books'], label: 'List' },
+    { href: ['list'], label: 'List' },
     { href: ['stats'], label: 'Stats' },
   ];
 }

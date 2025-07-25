@@ -7,7 +7,7 @@ export const BOOKS_ROUTES: Routes = [
     path: '',
     component: Books,
     children: [
-      { path: '', component: List },
+      { path: 'list', component: List },
       { path: 'stats', component: Stats },
     ],
   },

@@ -13,11 +13,12 @@ import { setEntities, withEntities } from '@ngrx/signals/entities';
 import { ApiLink } from '../types';
 import { ApiLinkCreate, LinkApiService } from './links-api';
 
-import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { injectDispatch } from '@ngrx/signals/events';
 import { Store } from '@ngrx/store';
-import { exhaustMap, interval, mergeMap, pipe, tap } from 'rxjs';
+import { firstValueFrom, interval } from 'rxjs';
+import { applicationErrorEvents } from '../../shared/errors/store';
 import { selectSub } from '../../shared/identity/store';
-import { tapResponse } from '@ngrx/operators';
 import {
   setFetching,
   setIsFulfilled,
@@ -30,10 +31,7 @@ import {
   setFilterTag,
   withLinkFiltering,
 } from './link-filter-feature';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { withUserPrefs } from './user-prefs-feature';
-import { injectDispatch } from '@ngrx/signals/events';
-import { applicationErrorEvents } from '../../shared/errors/store';
 type SortOptions = 'newest' | 'oldest';
 type LinkState = {
   sortOrder: SortOptions;
@@ -56,45 +54,28 @@ export const LinksStore = signalStore(
     return {
       setFilterTag: (tag: string) => patchState(state, setFilterTag(tag)),
       clearFilterTag: () => patchState(state, clearFilteringTag()),
-      addLink: rxMethod<ApiLinkCreate>(
-        pipe(
-          tap(() => patchState(state, setIsMutating())),
-          mergeMap((link) =>
-            service.addLink(link).pipe(
-              tapResponse(
-                (r) => {
-                  patchState(state, setEntities([r]), setIsFulfilled());
-                },
-                (err) => {
-                  console.error('Error adding link:', err);
-                  errorDispatch.addError({
-                    message: 'Failed to add link',
-                    source: 'LinksStore',
-                  });
-                  patchState(state, setIsFulfilled());
-                },
-              ),
-            ),
-          ),
-        ),
-      ),
-      _load: rxMethod<{ isBackgroundFetch: boolean }>(
-        pipe(
-          tap((p) =>
-            patchState(
-              state,
-              p.isBackgroundFetch ? setFetching() : setIsLoading(),
-            ),
-          ),
-          exhaustMap(() =>
-            service
-              .getLinks()
-              .pipe(
-                tap((r) => patchState(state, setEntities(r), setIsFulfilled())),
-              ),
-          ),
-        ),
-      ),
+      async addLink(link: ApiLinkCreate) {
+        patchState(state, setIsMutating());
+
+        try {
+          const response = await firstValueFrom(service.addLink(link));
+
+          patchState(state, setEntities([response]), setIsFulfilled());
+        } catch {
+          errorDispatch.addError({
+            message: 'Failed to add link',
+            source: 'LinksStore',
+          });
+          patchState(state, setIsFulfilled());
+        }
+      },
+      async _load(isBackgroundFetch: boolean) {
+        patchState(state, isBackgroundFetch ? setFetching() : setIsLoading());
+
+        const links = await firstValueFrom(service.getLinks());
+
+        patchState(state, setEntities(links), setIsFulfilled());
+      },
       changeSortOrder: (sortOrder: SortOptions) =>
         patchState(state, { sortOrder }),
     };
@@ -128,12 +109,12 @@ export const LinksStore = signalStore(
   }),
   withHooks({
     onInit(store) {
-      store._load({ isBackgroundFetch: false });
+      store._load(false);
       console.log('The Links Store Is Created!');
       // This is better than what I had with the setInterval - the takeUntilDestroyed will clean this up for us.
       interval(5000)
         .pipe(takeUntilDestroyed())
-        .subscribe(() => store._load({ isBackgroundFetch: true }));
+        .subscribe(() => store._load(true));
     },
     onDestroy() {
       console.log('The Links Store is DESTROYED');

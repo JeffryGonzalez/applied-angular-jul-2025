@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { BooksStore } from '../services/books-store';
 
 /*
@@ -19,7 +19,7 @@ Requirements for Sprint 3
   template: `
     <h1>Book List</h1>
     <ul class="list bg-base-100 rounded-box shadow-md">
-      @let books = store.entities();
+      @let books = store.books();
       <!-- <li class="p-4 pb-2 text-xs opacity-60 tracking-wide">
       Most played songs this week
     </li> -->
