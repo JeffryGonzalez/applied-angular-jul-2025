@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Sorting } from '../components/sorting';
 import { BooksStore } from '../services/books-store';
 
 /*
@@ -15,11 +16,13 @@ Requirements for Sprint 3
 @Component({
   selector: 'app-book-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [],
+  imports: [Sorting],
   template: `
     <h1>Book List</h1>
+    <!-- Sorting -->
+    <app-books-sorting />
     <ul class="list bg-base-100 rounded-box shadow-md">
-      @let books = store.books();
+      @let books = store.sortedList();
       <!-- <li class="p-4 pb-2 text-xs opacity-60 tracking-wide">
       Most played songs this week
     </li> -->

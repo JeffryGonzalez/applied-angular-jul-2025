@@ -10,6 +10,7 @@ import {
 } from '@ngrx/signals';
 import { firstValueFrom } from 'rxjs';
 import { BookApiItem } from '../types';
+import { SortOption, withBookSorting } from './book-sorting-feature';
 
 export type BooksState = {
   books: BookApiItem[];
@@ -23,6 +24,7 @@ const initialState: BooksState = {
 
 export const BooksStore = signalStore(
   withState(() => initialState),
+  withBookSorting(),
   withMethods((store) => {
     const http = inject(HttpClient);
 
@@ -62,6 +64,9 @@ export const BooksStore = signalStore(
           ? Math.round(totalPages / store.books().length)
           : null;
       }),
+      sortedList: computed(() => {
+        return [...store.books()].sort(getBookListSorter(store.sortedBy()));
+      }),
     };
   }),
   withHooks({
@@ -70,3 +75,23 @@ export const BooksStore = signalStore(
     },
   }),
 );
+
+const getBookListSorter = (
+  sortBy: SortOption,
+  order: 'asc' | 'desc' = 'asc',
+) => {
+  return (a: BookApiItem, b: BookApiItem) => {
+    switch (order) {
+      case 'asc':
+        if (a[sortBy] < b[sortBy]) return -1;
+        if (b[sortBy] < a[sortBy]) return 1;
+        break;
+      case 'desc':
+        if (a[sortBy] > b[sortBy]) return -1;
+        if (b[sortBy] > a[sortBy]) return 1;
+        break;
+    }
+
+    return 0;
+  };
+};
