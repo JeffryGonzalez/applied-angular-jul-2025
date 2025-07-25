@@ -1,16 +1,24 @@
-import { JsonPipe } from '@angular/common';
-import { Component, ChangeDetectionStrategy, resource } from '@angular/core';
-import { BookApiItem } from './types';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { FeatureNav, FeatureNavLink } from '../shared/components/feature-nav';
+import { BooksStore } from './services/books-store';
 
 @Component({
   selector: 'app-books',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [JsonPipe],
-  template: ` <pre>{{ booksResource.value() | json }}</pre> `,
+  imports: [FeatureNav],
+  providers: [BooksStore],
+  template: `
+    <app-feature-nav [links]="bookLinks" sectionName="Books">
+      <!-- @if (isLoggedIn() === false) {
+        <p>You must be logged in to see the preferences link or add links</p>
+      } -->
+    </app-feature-nav>
+  `,
   styles: ``,
 })
 export class Books {
-  booksResource = resource<BookApiItem[], unknown>({
-    loader: () => fetch('/api/books').then((r) => r.json()),
-  });
+  bookLinks: FeatureNavLink[] = [
+    { href: ['list'], label: 'List' },
+    { href: ['stats'], label: 'Stats' },
+  ];
 }
